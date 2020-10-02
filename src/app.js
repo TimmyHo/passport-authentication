@@ -1,7 +1,11 @@
+const path = require('path');
 const express = require('express');
+const hbs = require('hbs');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
+
+const connect = require('connect-ensure-login');
 
 const User = require('./models/user');
 
@@ -10,7 +14,18 @@ const app = express();
 
 const port = process.env.PORT || 5000;
 
-app.use(express.static('public'));
+// Define paths for express config
+const publicDirPath = path.join(__dirname, '../public');
+const viewsPath = path.join(__dirname, '../templates/views');
+const partialsPath = path.join(__dirname, '../templates/partials');
+
+// Setup handlebars engine and views location
+app.set('view engine', 'hbs');
+app.set('views', viewsPath);
+hbs.registerPartials(partialsPath);
+
+// Setup static directory to serve
+app.use(express.static(publicDirPath));
 
 app.use(express.json()); // support json encoded bodies
 app.use(express.urlencoded({ extended: true })); // support encoded bodies
@@ -22,6 +37,7 @@ app.use(session(
         saveUninitialized: false
     }
 ));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -58,23 +74,22 @@ app.get('/', (req, res) => {
 });
 
 app.get('/login', 
-        passport.authenticate('local'),
         (req, res) => {
-    res.send({
-        title: 'Login page'
-    });
+    res.render('login');
 });
 
-app.post('/login', passport.authenticate('local')
-// , (err, user, msg) => {
-//     console.log(err, user, msg);
-// })
-, (req, res) => {
+app.post('/login', passport.authenticate('local', { successRedirect: '/userInfo', failureRedirect: '/login' }));
+
+// this only renders on a post to login which should actually redirect to userinfo
+app.post('/login', passport.authenticate('local'), (req, res) => {
     console.log(req.user);
-    res.send({
-        title: 'login ok!'
-    })
+    res.render('userInfo', {user: req.user})
 });
+
+app.get('/userInfo', connect.ensureLoggedIn('/login'),   (req, res) => {
+    console.log(req.user);
+    res.render('userInfo', {user: req.user});
+})
 
 app.listen(port,  () => {
     console.log('Server is up on port '+port);
