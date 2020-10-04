@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
+    "dev": "env-cmd -f ./config/dev.env nodemon src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,10 +16,13 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "hbs": "^4.1.1",
+    "mongoose": "^5.10.7",
     "passport": "^0.4.1",
+    "passport-google-oauth": "^2.0.0",
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
+    "env-cmd": "^10.1.0",
     "nodemon": "^2.0.4"
   }
 }
