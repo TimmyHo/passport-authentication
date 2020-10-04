@@ -54,21 +54,24 @@ passport.deserializeUser((id, done) => {
     });
 });
 
-// passport.use(new LocalStrategy(
-//     (username, password, done) => {
-//         console.log(`trying to authenticate: ${username}, ${password} `);
-//         User.findByUsername(username, (err, user) => {
-//         if (err) { return done(err); }
-//         if (!user) {
-//             return done(null, false, { message: 'Incorrect username.' });
-//         }
-//         if (user.password !== password) {
-//             return done(null, false, { message: 'Incorrect password.' });
-//         }
-//         return done(null, user);
-//         });
-//     }
-// ));
+passport.use(new LocalStrategy(
+    (email, password, done) => {
+        console.log(`trying to authenticate: ${email}, ${password} `);
+        // User.findByUsername(username, (err, user) => {
+        // if (err) { return done(err); }
+        // if (!user) {
+        //     return done(null, false, { message: 'Incorrect username.' });
+        // }
+        // if (user.password !== password) {
+        //     return done(null, false, { message: 'Incorrect password.' });
+        // }
+        // return done(null, user);
+        // });
+        User.findOrCreate({ email: email, type: 'local', password: password }, function (err, user) {
+                     return done(err, user);
+                   });
+    }
+));
 
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
@@ -78,23 +81,23 @@ const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 //   profile), and invoke a callback with a user object.
 
 // uses the desktop client ouath client id and secret 
-passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/auth/google/callback"
-  },
-  function(accessToken, refreshToken, profile, done) {
-    console.log('this is working');
-    console.log(accessToken);
-    console.log(refreshToken);
-    console.log(profile)
+// passport.use(new GoogleStrategy({
+//     clientID: process.env.GOOGLE_CLIENT_ID,
+//     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//     callbackURL: "/auth/google/callback"
+//   },
+//   function(accessToken, refreshToken, profile, done) {
+//     console.log('this is working');
+//     console.log(accessToken);
+//     console.log(refreshToken);
+//     console.log(profile)
 
-       User.findOrCreate({ email: profile.emails[0].value, type: 'google', googleId: profile.id }, function (err, user) {
-         return done(err, user);
-       });
-    done(null, profile);
-  }
-));
+//        User.findOrCreate({ email: profile.emails[0].value, type: 'google', googleId: profile.id }, function (err, user) {
+//          return done(err, user);
+//        });
+//     done(null, profile);
+//   }
+// ));
 
 app.get('/', (req, res) => {
     res.send({
@@ -112,7 +115,7 @@ app.get('/login',
 // this only renders on a post to login which should actually redirect to userinfo
 app.post('/login', passport.authenticate('local'), (req, res) => {
     console.log(req.user);
-    res.render('userInfo', {user: req.user})
+    res.redirect('/userInfo')
 });
 
 app.get('/userInfo', connect.ensureLoggedIn('/login'),   (req, res) => {
