@@ -51,11 +51,6 @@ app.use(flash());
 app.use('', viewRoutes);
 // app.use('/auth', authRoutes);
 
-app.get('/', (req, res) => {
-    res.send({
-        title: 'Passport Authentication Test'
-    });
-});
 passport.serializeUser((user, done) => {
     console.log('serializing user')
     done(null, user.id);
@@ -138,6 +133,11 @@ app.post('/auth/signin/local', passport.authenticate('local-signin', {
     failureRedirect: '/signin',
     failureFlash: true
 }));
+
+app.get('/auth/signout', (req, res) => {
+    req.logout();
+    res.redirect('/');
+})
 
 app.listen(port,  () => {
     console.log('Server is up on port '+port);
