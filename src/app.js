@@ -7,11 +7,11 @@ const session = require('express-session');
 
 const connect = require('connect-ensure-login');
 
+const viewRoutes = require('./routes/view');
 const mongoose = require('./db/mongoose');
 const User = require('./models/user');
 
 const app = express();
-
 
 const port = process.env.PORT || 5000;
 
@@ -30,6 +30,8 @@ app.use(express.static(publicDirPath));
 
 app.use(express.json()); // support json encoded bodies
 app.use(express.urlencoded({ extended: true })); // support encoded bodies
+
+app.use('', viewRoutes);
 
 app.use(session(
     {
@@ -105,11 +107,6 @@ app.get('/', (req, res) => {
     });
 });
 
-app.get('/login', 
-        (req, res) => {
-    res.render('login');
-});
-
 // app.post('/login', passport.authenticate('local', { successRedirect: '/userInfo', failureRedirect: '/login' }));
 
 // this only renders on a post to login which should actually redirect to userinfo
@@ -118,10 +115,7 @@ app.post('/login', passport.authenticate('local'), (req, res) => {
     res.redirect('/userInfo')
 });
 
-app.get('/userInfo', connect.ensureLoggedIn('/login'),   (req, res) => {
-    console.log(req.user);
-    res.render('userInfo', {user: req.user});
-})
+
 
 app.get('/auth/google',
   passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid'] }));

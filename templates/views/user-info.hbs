@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Login</title>
+        <title>User Info</title>
+        {{> imports}}
     </head>
     <body>
         <div class="main-content">
             <h1>User Info Page</h1>
 
-            <strong>email: </strong> {{user.email}}<br/>
+            <strong>E-mail: </strong> {{user.email}}<br/>
 
-            <strong>password: </strong> {{user.password}}<br/>
+            <strong>Password: </strong> {{user.password}}<br/>
             <strong>Google ID: </strong> {{user.googleId}}<br/>
         </div>
     </body>
