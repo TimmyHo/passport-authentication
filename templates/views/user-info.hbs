@@ -2,9 +2,10 @@
 <html>
     <head>
         <title>User Info</title>
-        {{> imports}}
+        {{> imports_header}}
     </head>
     <body>
+        {{> navbar}}
         <div class="main-content">
             <h1>User Info Page</h1>
 
@@ -13,5 +14,6 @@
             <strong>Password: </strong> {{user.password}}<br/>
             <strong>Google ID: </strong> {{user.googleId}}<br/>
         </div>
+        {{> imports_footer}}
     </body>
 </html>
