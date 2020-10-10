@@ -74,53 +74,69 @@ User.findByEmail = async (email, cb) => {
     const res = await User.findOne({email});
 
     if (!res) {
-        return cb('User not found');
+        return cb('Email not found');
     }
     else {
         return cb(null, res);
     }
 }
 
-User.findOrCreate = async(payload, cb) => {
+User.signIn = async (payload, cb) => {
     User.findByEmail(payload.email, async (err, user) => {
-
         if (!user) {
-            let newUser = null;
-            if (payload.type === 'google') {
-                newUser = new User({
-                    email: payload.email,
-                    googleId: payload.googleId
-                })
-            }
-
-            else if (payload.type === 'local') {
-                newUser = new User({
-                    email: payload.email,
-                    password: payload.password
-                })
-            }
-
-            await newUser.save();
-            return cb(null, newUser);
+            cb('Email not found');
         } else {
-            if (payload.type === 'google') {
-                if (user.googleId !== payload.googleId) {
-                    return cb('invalid 3rd party id')
+            if (payload.type === 'local') {
+                if (payload.password !== user.password) {
+                    return cb('Invalid password');
                 }
             }
-            else if (payload.type === 'local') {
-                if (user.password !== payload.password) {
-                    return cb('invalid password');
-                }
-            }
-
             
             return cb(null, user);
         }
     })   
 }
 
-User.create = async(payload, cb) => {
+// User.findOrCreate = async(payload, cb) => {
+//     User.findByEmail(payload.email, async (err, user) => {
+
+//         if (!user) {
+//             let newUser = null;
+//             if (payload.type === 'google') {
+//                 newUser = new User({
+//                     email: payload.email,
+//                     googleId: payload.googleId
+//                 })
+//             }
+
+//             else if (payload.type === 'local') {
+//                 newUser = new User({
+//                     email: payload.email,
+//                     password: payload.password
+//                 })
+//             }
+
+//             await newUser.save();
+//             return cb(null, newUser);
+//         } else {
+//             if (payload.type === 'google') {
+//                 if (user.googleId !== payload.googleId) {
+//                     return cb('invalid 3rd party id')
+//                 }
+//             }
+//             else if (payload.type === 'local') {
+//                 if (user.password !== payload.password) {
+//                     return cb('invalid password');
+//                 }
+//             }
+
+            
+//             return cb(null, user);
+//         }
+//     })   
+// }
+
+User.create = async (payload, cb) => {
     User.findByEmail(payload.email, async (err, user) => {
         if (user) {
             return cb('Email already exists!');

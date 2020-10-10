@@ -9,9 +9,15 @@
         <div class="main-content">
             <h1>Sign-In Page</h1>
 
-            <form method="POST">
-                <label>Username</label>
-                <input type="text" name="username"/><br/>
+            {{#if err}}
+                <div class="alert alert-danger">
+                    {{err}}
+                </div>
+            {{/if}}
+
+            <form method="POST" action="/auth/signin/local">
+                <label>Email</label>
+                <input type="text" name="email"/><br/>
                 <label>Password</label>
                 <input type="password" name="password"/><br/>
 

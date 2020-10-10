@@ -105,7 +105,6 @@ passport.use('local-signup', new LocalStrategy({
     usernameField: 'email'
 }, (email, password, done) => {
     User.create({type: 'local', email: email, password: password }, (err, user) => {
-        // console.log('wow!')
         if (err) {
             return done(null, null, {message: err})
         }
@@ -113,18 +112,32 @@ passport.use('local-signup', new LocalStrategy({
             return done(null, user)
         }
     });
-}
-));
+}));
+
+passport.use('local-signin', new LocalStrategy({
+    usernameField: 'email'
+}, (email, password, done) => {
+    User.signIn({type: 'local', email: email, password: password }, (err, user) => {
+        if (err) {
+            return done(null, null, {message: err})
+        }
+        else {
+            return done(null, user)
+        }
+    });
+}));
 
 app.post('/auth/signup/local', passport.authenticate('local-signup', {
     successRedirect: '/user/me',
     failureRedirect: '/signup',
     failureFlash: true
-    // res.send('hi');
 }));
 
-// app.get('/auth/signup/local', passport.authenticate('local-signin', {successRedirect: '/user/me', failureRedirect: '/signUp'}));
-
+app.post('/auth/signin/local', passport.authenticate('local-signin', {
+    successRedirect: '/user/me',
+    failureRedirect: '/signin',
+    failureFlash: true
+}));
 
 app.listen(port,  () => {
     console.log('Server is up on port '+port);

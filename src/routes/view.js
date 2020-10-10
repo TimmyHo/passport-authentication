@@ -8,12 +8,12 @@ router.get('/signup', (req, res) => {
 });
 
 router.get('/signin', (req, res) => {
-    res.render('sign-in');
+    err = req.flash('error');
+    res.render('sign-in', {err});
 });
 
 
 router.get('/user/me', (req, res) => {
-
     res.render('user-info');
 });
 
