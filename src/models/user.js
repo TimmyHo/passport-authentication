@@ -120,4 +120,23 @@ User.findOrCreate = async(payload, cb) => {
     })   
 }
 
+User.create = async(payload, cb) => {
+    User.findByEmail(payload.email, async (err, user) => {
+        if (user) {
+            return cb('Email already exists!');
+        }
+        else {
+            if (payload.type === 'local') {
+                newUser = new User({
+                    email: payload.email,
+                    password: payload.password
+                })
+            }
+
+            await newUser.save();
+            return cb(null, newUser);
+        }
+    })   
+}
+
 module.exports = User;

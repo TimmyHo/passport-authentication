@@ -1,16 +1,19 @@
 const express = require('express');
+
 const router = express.Router();
 
-router.get('/signUp', (req, res) => {
-    res.render('sign-up');
+router.get('/signup', (req, res) => {
+    err = req.flash('error');
+    res.render('sign-up', {err});
 });
 
-router.get('/signIn', (req, res) => {
+router.get('/signin', (req, res) => {
     res.render('sign-in');
 });
 
 
 router.get('/user/me', (req, res) => {
+
     res.render('user-info');
 });
 
