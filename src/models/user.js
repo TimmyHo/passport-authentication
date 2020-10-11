@@ -66,6 +66,7 @@ User.create = async (payload, cb) => {
             }
 
             await newUser.save();
+            
             return cb(null, newUser);
         }
     })   
