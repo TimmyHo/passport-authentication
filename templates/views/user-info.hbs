@@ -6,13 +6,26 @@
     </head>
     <body>
         {{> navbar}}
-        <div class="main-content">
+        <div class="container-fluid mt-2 main-content">
             <h1>User Info Page</h1>
 
-            <strong>E-mail: </strong> {{user.email}}<br/>
+            <div class="w-75 mx-auto mt-2 text-left">
+                <table class="table table-dark m-0">
+                    <tr>
+                        <th scope="row">E-mail:</th>
+                        <td>{{user.email}}</td>
+                    </tr>
 
-            <strong>Password: </strong> {{user.password}}<br/>
-            <strong>Google ID: </strong> {{user.googleId}}<br/>
+                    <tr>
+                        <th scope="row">Password:</th>
+                        <td>{{user.password}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Google ID:</th>
+                        <td>{{user.googleId}}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
         {{> imports_footer}}
     </body>

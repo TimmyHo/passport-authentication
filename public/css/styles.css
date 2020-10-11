@@ -1,7 +1,12 @@
 body {
-    background: yellowgreen;
+    background: lightseagreen;
 }
 
 .main-content {
     text-align: center;
+}
+
+table.infoTable {
+    border-collapse: separate;
+    border-spacing: 5px 3px;
 }

@@ -6,28 +6,35 @@
     </head>
     <body>
         {{> navbar}}
-        <div class="main-content">
+        <div class="container-fluid main-content">
             <h1>Sign-In Page</h1>
 
             {{#if err}}
-                <div class="alert alert-danger">
+                <div class="alert alert-danger w-50 mx-auto mt-2">
                     {{err}}
                 </div>
             {{/if}}
-
-            <form method="POST" action="/auth/signin/local">
-                <label>Email</label>
-                <input type="text" name="email"/><br>
-                <label>Password</label>
-                <input type="password" name="password"/><br>
-
-                <button>Sign In</button>
+            
+            <form  method="POST" action="/auth/signin/local">
+                <div class="mt-2">
+                    <table class="mx-auto infoTable">
+                        <tr>
+                            <th scope="row"><label class="form-check-label" for="email">E-mail:</label></th>
+                            <td><input class="form-control" type="text" name="email"/></td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><label class="form-check-label" for="password">Password:</label></th>
+                            <td><input class="form-control" type="password" name="password"/></td>
+                        </tr>
+                    </table>
+                </div>
+                <button class="btn btn-dark mt-2 mb-1 mx-auto">Sign In</button>
             </form>
 
-            <br><br>
+            OR<br>
 
             <form method="POST" action="/auth/signin/google" >
-                <button><i class="fab fa-google"></i> Sign In</button>
+                <button class="btn btn-dark mt-2 mx-auto"><i class="fab fa-google"></i> Sign In</button>
             </form>
         </div>
         
