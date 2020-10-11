@@ -1,17 +1,15 @@
 const path = require('path');
 const express = require('express');
-const hbs = require('hbs');
 const session = require('express-session');
 const passport = require('passport');
 const flash =  require('connect-flash');
-
-const connect = require('connect-ensure-login');
+const hbs = require('hbs');
 
 const viewRoutes = require('./routes/view');
 // const authRoutes = require('./routes/auth');
 
-
 const LocalStrategy = require('passport-local').Strategy;
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 const mongoose = require('./db/mongoose');
 const User = require('./models/user');
@@ -52,49 +50,25 @@ app.use('', viewRoutes);
 // app.use('/auth', authRoutes);
 
 passport.serializeUser((user, done) => {
-    console.log('serializing user')
-    done(null, user.id);
+    email = user.email;
+    if (user.provider === 'google') {
+        email = user.emails[0].value
+    }
+    console.log(`serializing user by email: ${email}`);
+    done(null, email);
 });
   
-passport.deserializeUser((id, done) => {
-    console.log('deserializing user')
-    User.findById(id, (err, user) => {
-        done(err, user);
-    });
+passport.deserializeUser((email, done) => {
+    console.log(`deserializing user by email: ${email}`);
+    User.findByEmail(email,  (err, user) => {
+        if (err) {
+            return done(null, null, {message: err})
+        }
+        else {
+            return done(null, user)
+        }
+    })
 });
-
-// passport.use('signup-local', new LocalStrategy({
-//         usernameField : 'email',
-//         passwordField : 'password',
-//     }, (email, password, done) => {
-//         console.log(`SIGN UP -> Trying to authenticate: ${email}, ${password} `);
-                  
-//         // User.findByUsername(username, (err, user) => {
-//         // if (err) { return done(err); }
-//         // if (!user) {
-//         //     return done(null, false, { message: 'Incorrect username.' });
-//         // }
-//         // if (user.password !== password) {
-//         //     return done(null, false, { message: 'Incorrect password.' });
-//         // }
-//         // return done(null, user);
-//         // });
-//         // User.findOrCreate({ email: email, type: 'local', password: password }, (err, user) => {
-//         //     return done(err, user);
-//         // });
-
-//         // User.findOrCreate({ email: email, type: 'local', password: password }, (err, user) => {
-//         //     return done(err, user);
-//         // });
-//         return done('this is an error')
-//     }
-// ));
-
-// passport.use(new LocalStrategy( function (email, password, done) {
-//     console.log(`FREE -> Trying to authenticate: ${email}, ${password} `);
-//         return done(null, {id: 'awesome'})
-// }
-// ));
 
 passport.use('local-signup', new LocalStrategy({
     usernameField: 'email'
@@ -122,6 +96,39 @@ passport.use('local-signin', new LocalStrategy({
     });
 }));
 
+// uses the desktop client ouath client id and secret 
+passport.use('google-signup', new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "/auth/signup/google/callback"
+}, (accessToken, refreshToken, profile, done) => {
+    User.create({ type: 'google', email: profile.emails[0].value, googleId: profile.id }, (err, user) => {        
+        console.log(user)
+        if (err) {
+            return done(null, null, {message: err})
+        }
+        else {
+            return done(null, user)
+        }
+    });
+}));
+
+passport.use('google-signin', new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "/auth/signin/google/callback"
+}, (accessToken, refreshToken, profile, done) => {
+    User.signIn({ type: 'google', email: profile.emails[0].value, googleId: profile.id }, (err, user) => {
+        if (err) {
+            return done(null, null, {message: err});
+        }
+        else {
+            return done(null, user);
+        }
+    });
+    done(null, profile);
+}));
+
 app.post('/auth/signup/local', passport.authenticate('local-signup', {
     successRedirect: '/user/me',
     failureRedirect: '/signup',
@@ -134,11 +141,33 @@ app.post('/auth/signin/local', passport.authenticate('local-signin', {
     failureFlash: true
 }));
 
+
+app.post('/auth/signup/google', passport.authenticate('google-signup', {
+    scope: ['https://www.googleapis.com/auth/userinfo.email']
+}));
+
+app.post('/auth/signin/google', passport.authenticate('google-signin', {
+    scope: ['https://www.googleapis.com/auth/userinfo.email']
+}));
+
+app.get('/auth/signup/google/callback', passport.authenticate('google-signup', {
+    successRedirect: '/user/me',
+    failureRedirect: '/signup',
+    failureFlash: true
+}));
+
+app.get('/auth/signin/google/callback', passport.authenticate('google-signin', {
+    successRedirect: '/user/me',
+    failureRedirect: '/signin',
+    failureFlash: true
+}));
+
+
 app.get('/auth/signout', (req, res) => {
     req.logout();
     res.redirect('/');
-})
+});
 
-app.listen(port,  () => {
+app.listen(port, () => {
     console.log('Server is up on port '+port);
 });

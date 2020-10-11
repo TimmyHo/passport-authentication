@@ -16,11 +16,17 @@
             {{/if}}
             <form method="POST" action="/auth/signup/local">
                 <label>Email</label>
-                <input type="text" name="email"/><br/>
+                <input type="text" name="email"/><br>
                 <label>Password</label>
-                <input type="password" name="password"/><br/>
+                <input type="password" name="password"/><br>
 
                 <input type="submit">
+            </form>
+
+            <br><br>
+
+            <form method="POST" action="/auth/signup/google" >
+                <button><i class="fab fa-google"></i> Sign Up</button>
             </form>
         </div>
         

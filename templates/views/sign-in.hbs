@@ -17,11 +17,17 @@
 
             <form method="POST" action="/auth/signin/local">
                 <label>Email</label>
-                <input type="text" name="email"/><br/>
+                <input type="text" name="email"/><br>
                 <label>Password</label>
-                <input type="password" name="password"/><br/>
+                <input type="password" name="password"/><br>
 
-                <input type="submit">
+                <button>Sign In</button>
+            </form>
+
+            <br><br>
+
+            <form method="POST" action="/auth/signin/google" >
+                <button><i class="fab fa-google"></i> Sign In</button>
             </form>
         </div>
         

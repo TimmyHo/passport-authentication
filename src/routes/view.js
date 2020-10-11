@@ -18,7 +18,8 @@ router.get('/signin', (req, res) => {
 });
 
 router.get('/user/me', authMiddleware.isSignedIn,  (req, res) => {
-    console.log('USER: '+req.user)
+    console.log('in user.me route: USER: ')
+    console.log(req.user)
     res.render('user-info', {user: req.user});
 });
 
