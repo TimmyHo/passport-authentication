@@ -8,3 +8,5 @@ mongoose.connect(mongoDbUrl, {
     useFindAndModify: false,
     useUnifiedTopology: true
 });
+
+module.exports = mongoose;

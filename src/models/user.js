@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('../db/mongoose');
 
 const userSchema = new mongoose.Schema({
     email: {
@@ -74,6 +74,7 @@ User.create = async (payload, cb) => {
 module.exports = User;
 
 
+// This is a non-mongo db example:
 
 // var records = [
 //     { id: 1, username: 'jack', password: 'a', displayName: 'Jack', emails: [ { value: 'jack@example.com' } ] }

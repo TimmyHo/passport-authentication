@@ -1,6 +1,6 @@
-const middlewareObj = {}
+const authMiddleware = {}
 
-middlewareObj.isSignedIn = (req, res, next) => {
+authMiddleware.isSignedIn = (req, res, next) => {
     if (req.isAuthenticated()) {
         return next();
     }
@@ -8,4 +8,4 @@ middlewareObj.isSignedIn = (req, res, next) => {
     res.redirect('/signin');
 }
 
-module.exports = middlewareObj;
+module.exports = authMiddleware;
