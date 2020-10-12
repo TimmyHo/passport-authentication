@@ -3,8 +3,6 @@ Passport Authentication is a quick and simple project for me to work with authen
 
 ![Secret Page Success](docs/images/secret_page_success.png)
 
-__Trying to access secret when not signed in__
-![Secret Page Error](docs/images/secret_page_error.png)
 
 ## Major Features
 * Using Passport to handle login and login/logout sessions
@@ -21,6 +19,13 @@ __Trying to access secret when not signed in__
 * Node.js
 * Express.js
 * MongoDB
+
+## Screenshots
+__Logging in through Google__
+![Google Sign in](docs/images/google_signin.png)
+
+__Trying to access secret when not signed in__
+![Secret Page Error](docs/images/secret_page_error.png)
 
 ## Usage
 Ensure you have installed node, npm and a local mongoDB instance (see https://docs.mongodb.com/manual/installation/ for details) or a cloud mongoDB instance(set MONGODB_URL enivornment variable) 
